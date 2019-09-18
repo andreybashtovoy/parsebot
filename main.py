@@ -27,7 +27,7 @@ def send_text(message):
 	#mid=message.chat.id
 	#if message.text.lower() == 'привет':
 	#	bot.send_message(message.chat.id, 'Привет, мой создатель')
-	if('/dm' in message.text.lower()):
+	if('/dm' in message.text.lower() && !('/dm_total' in message.text.lower())):
 		temp=message.text.lower().split(' ')
 		if(len(temp)>1):
 			result=get_stats(0, temp[1])
