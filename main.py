@@ -25,8 +25,8 @@ def start_message(message):
 def send_text(message):
 	#global mid, TEMP_OBJECT
 	#mid=message.chat.id
-	if message.text.lower() == 'привет':
-		bot.send_message(message.chat.id, 'Привет, мой создатель')
+	#if message.text.lower() == 'привет':
+	#	bot.send_message(message.chat.id, 'Привет, мой создатель')
 	if('/dm' in message.text.lower()):
 		temp=message.text.lower().split(' ')
 		if(len(temp)>1):
