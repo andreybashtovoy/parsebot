@@ -13,7 +13,7 @@ SCOPES = ['https://www.googleapis.com/auth/spreadsheets.readonly']
 SAMPLE_SPREADSHEET_ID = '1wgjxDcPGbcFnFhToXQApPerdURvo6ureUrCfyvOv_WU'
 SAMPLE_RANGE_NAME = 'B2:U'
 
-def get_stats(mode,name):
+def get_stats(mode,name=''):
 	"""Shows basic usage of the Sheets API.
 	Prints values from a sample spreadsheet.
 	"""
@@ -47,15 +47,44 @@ def get_stats(mode,name):
 	if not values:
 		print('No data found.')
 	else:
-		for i in values:
-			if(len(i) and name in i[0].lower()):
-				if(mode==0):
-					return(i[0]+": "+' '.join(i[1:]))
-				else:
-					total=0;
-					for n in i[1:]:
-						total=total+int(n)
-					return("Суммарный балл: "+str(total))
+		if(mode==0):
+			for i in range(len(values)):
+				if(len(values[i]) and name in values[i][0].lower()):
+						total=0;
+						scores='';
 
-print(get_stats(1,'баштовой'))
+						for n in range(len(values[i][1:])):
+							if(values[i][1:][n]!=''):
+								total=total+int(values[i][1:][n])
+								scores=scores+'*'+values[0][n+1]+'*'+": "+str(values[i][1:][n])+"\n"
+
+						return('_'+values[i][0]+"_\n\n"+scores+"\n*Общий балл*: "+str(total))
+		elif(mode==1):
+			arr=[]
+			for i in range(len(values)):
+				if(len(values[i]) and i!=0):
+					total=0;
+
+					for n in range(len(values[i][1:])):
+						if(values[i][1:][n]!='' and values[i][0]!='' and not('Група' in values[i][0])):
+							#print(values[i][0]+" "+values[i][1:][n])
+							total=total+int(values[i][1:][n])
+					arr.append([total,values[i][0]])
+
+			arr.sort();
+			arr.reverse()
+
+			string="*Текущий рейтинг потока по ДМ:*\n"
+			for i in range(len(arr)):
+				if(i<20):
+					string=string+"\n*"+str(i+1)+"*. _"+arr[i][1]+"_: *"+str(arr[i][0])+"б.*"
+				else:
+					break
+			return(string)
+
+
+					
+		return("*ЪУЪ!*")
+
+print(get_stats(1))
 

@@ -16,6 +16,10 @@ SAMPLE_RANGE_NAME = 'B2:U'
 
 bot = telebot.TeleBot('956609068:AAHkOA95qzROv8Vrq56qLKqlp9UPVvMPFgE')
 
+@bot.message_handler(commands=['start'])
+def dm_start(message):
+	bot.send_message(message.chat.id, 'Привет! Введи "/dm Фамилия", чтобы узнать свои баллы по ДМ.')
+
 @bot.message_handler(commands=['dm'])
 def dm_send(message):
 	temp=message.text.lower().split(' ')
@@ -27,11 +31,12 @@ def dm_send(message):
 
 @bot.message_handler(commands=['dm_rating'])
 def dm_rating(message):
-	result=get_stats(1,temp[1])
+	result=get_stats(1)
+	bot.send_message(message.chat.id, str(result), parse_mode='Markdown')
 
 
 
-def get_stats(mode,name):
+def get_stats(mode,name=''):
 	"""Shows basic usage of the Sheets API.
 	Prints values from a sample spreadsheet.
 	"""
@@ -65,20 +70,43 @@ def get_stats(mode,name):
 	if not values:
 		print('No data found.')
 	else:
-		for i in range(len(values)):
-			if(len(values[i]) and name in values[i][0].lower()):
-				if(mode==0):
+		if(mode==0):
+			for i in range(len(values)):
+				if(len(values[i]) and name in values[i][0].lower()):
+						total=0;
+						scores='';
+
+						for n in range(len(values[i][1:])):
+							if(values[i][1:][n]!=''):
+								total=total+int(values[i][1:][n])
+								scores=scores+'*'+values[0][n+1]+'*'+": "+str(values[i][1:][n])+"\n"
+
+						return('_'+values[i][0]+"_\n\n"+scores+"\n*Общий балл*: "+str(total))
+		elif(mode==1):
+			arr=[]
+			for i in range(len(values)):
+				if(len(values[i]) and i!=0):
 					total=0;
-					scores='';
 
 					for n in range(len(values[i][1:])):
-						if(values[i][1:][n]!=''):
+						if(values[i][1:][n]!='' and values[i][0]!='' and not('Група' in values[i][0])):
+							#print(values[i][0]+" "+values[i][1:][n])
 							total=total+int(values[i][1:][n])
-							scores=scores+'*'+values[0][n+1]+'*'+": "+str(values[i][1:][n])+"\n"
+					arr.append([total,values[i][0]])
 
-					return('_'+values[i][0]+"_\n\n"+scores+"\n*Общий балл*: "+str(total))
-				elif(mode==1):
-					pass
+			arr.sort();
+			arr.reverse()
+
+			string="*Текущий рейтинг потока по ДМ:*\n"
+			for i in range(len(arr)):
+				if(i<20):
+					string=string+"\n*"+str(i+1)+"*. _"+arr[i][1]+"_: *"+str(arr[i][0])+"б.*"
+				else:
+					break
+			return(string)
+
+
+					
 		return("*ЪУЪ!*")
 
 
