@@ -16,32 +16,20 @@ SAMPLE_RANGE_NAME = 'B2:U'
 
 bot = telebot.TeleBot('956609068:AAHkOA95qzROv8Vrq56qLKqlp9UPVvMPFgE')
 
-@bot.message_handler(commands=['start'])
-def start_message(message):
-	bot.send_message(message.chat.id, 'Привет, ты написал мне /start')
+@bot.message_handler(commands=['dm'])
+def dm_send(message):
+	temp=message.text.lower().split(' ')
+	if(len(temp)>1):
+		result=get_stats(0,temp[1])
+		bot.send_message(message.chat.id, str(result), parse_mode='Markdown')
+	else:
+		bot.send_message(message.chat.id, 'Введи "/dm Фамилия", чтобы узнать свои баллы по ДМ.')
+
+@bot.message_handler(commands=['dm_rating'])
+def dm_rating(message):
+	result=get_stats(1,temp[1])
 
 
-@bot.message_handler(content_types=['text'])
-def send_text(message):
-	#global mid, TEMP_OBJECT
-	#mid=message.chat.id
-	#if message.text.lower() == 'привет':
-	#	bot.send_message(message.chat.id, 'Привет, мой создатель')
-	if('/dm' in message.text.lower() and not('/dm_total' in message.text.lower())):
-		temp=message.text.lower().split(' ')
-		if(len(temp)>1):
-			result=get_stats(0, temp[1])
-			bot.send_message(message.chat.id, str(result))
-		else:
-			bot.send_message(message.chat.id, 'Введи "/dm Фамилия", чтобы узнать свои баллы по ДМ.')
-
-	if('/dm_total' in message.text.lower()):
-		temp=message.text.lower().split(' ')
-		if(len(temp)>1):
-			result=get_stats(1, temp[1])
-			bot.send_message(message.chat.id, str(result))
-		else:
-			bot.send_message(message.chat.id, 'Введи "/dm_total Фамилия", чтобы узнать свой суммарный балл по ДМ.')
 
 def get_stats(mode,name):
 	"""Shows basic usage of the Sheets API.
@@ -77,15 +65,20 @@ def get_stats(mode,name):
 	if not values:
 		print('No data found.')
 	else:
-		for i in values:
-			if(len(i) and name in i[0].lower()):
+		for i in range(len(values)):
+			if(len(values[i]) and name in values[i][0].lower()):
 				if(mode==0):
-					return(i[0]+": "+' '.join(i[1:]))
-				else:
 					total=0;
-					for n in i[1:]:
-						total=total+int(n)
-					return("Суммарный балл: "+str(total))
+					scores='';
+
+					for n in range(len(values[i][1:])):
+						if(values[i][1:][n]!=''):
+							total=total+int(values[i][1:][n])
+							scores=scores+'*'+values[0][n+1]+'*'+": "+str(values[i][1:][n])+"\n"
+
+					return('_'+values[i][0]+"_\n\n"+scores+"\n*Общий балл*: "+str(total))
+				elif(mode==1):
+					pass
 
 
 
