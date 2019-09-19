@@ -79,6 +79,7 @@ def get_stats(mode,name):
 					return('_'+values[i][0]+"_\n\n"+scores+"\n*Общий балл*: "+str(total))
 				elif(mode==1):
 					pass
+		return("*ЪУЪ!*")
 
 
 
