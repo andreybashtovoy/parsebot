@@ -91,10 +91,11 @@ def get_stats(mode,name=''):
 					for n in range(len(values[i][1:])):
 						if(values[i][1:][n]!='' and values[i][0]!='' and not('Група' in values[i][0])):
 							#print(values[i][0]+" "+values[i][1:][n])
-							total=total+int(values[i][1:][n])
+							try:
+								total=total+int(values[i][1:][n])
 					arr.append([total,values[i][0]])
 
-			arr.sort();
+			arr.sort()
 			arr.reverse()
 
 			string="*Текущий рейтинг потока по ДМ:*\n"
