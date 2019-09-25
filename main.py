@@ -93,6 +93,8 @@ def get_stats(mode,name=''):
 							#print(values[i][0]+" "+values[i][1:][n])
 							try:
 								total=total+int(values[i][1:][n])
+							except:
+								pass
 					arr.append([total,values[i][0]])
 
 			arr.sort()
