@@ -106,7 +106,15 @@ def get_stats(mode,name=''):
 						for n in range(len(values[i][1:])):
 							if(values[i][1:][n]!=''):
 								total=total+int(values[i][1:][n])
-								scores=scores+'*'+values[0][n+1]+'*'+": "+str(values[i][1:][n])+"\n"
+
+								col_id=0
+
+								if(i>37 and i<73):
+									col_id=37
+								elif(i>74):
+									col_id=74
+
+								scores=scores+'*'+values[col_id][n+1]+'*'+": "+str(values[i][1:][n])+"\n"
 
 						return('_'+values[i][0]+"_\n\n"+scores+"\n*Общий балл*: "+str(total))
 		elif(mode==1):
