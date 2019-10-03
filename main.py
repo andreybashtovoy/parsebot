@@ -136,9 +136,16 @@ def get_stats(mode,name=''):
 			arr.reverse()
 
 			string="*Текущий рейтинг потока по ДМ:*\n"
+
+			place=0;
+			last=200;
+
 			for i in range(len(arr)):
 				if(i<20):
-					string=string+"\n*"+str(i+1)+"*. _"+arr[i][1]+"_: *"+str(arr[i][0])+"б.*"
+					if(arr[i][0]<last):
+						place=place+1
+					last=arr[i][0]
+					string=string+"\n*"+checkio(place)+"*. _"+arr[i][1]+"_: *"+str(arr[i][0])+"б.*"
 				else:
 					break
 			return(string)
@@ -146,6 +153,16 @@ def get_stats(mode,name=''):
 
 					
 		return("*ЪУЪ!*")
+
+
+def checkio(n):
+	result = ''
+	for arabic, roman in zip((1000, 900, 500, 400, 100, 90, 50, 40, 10, 9, 5, 4, 1),
+							 'M     CM   D    CD   C    XC  L   XL  X   IX V  IV I'.split()):
+		result += n // arabic * roman
+		n %= arabic
+		print('({}) {} => {}'.format(roman, n, result))
+	return result
 
 
 
