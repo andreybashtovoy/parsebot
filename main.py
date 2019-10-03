@@ -1,3 +1,10 @@
+#
+# Телеграм-бот для парсинга оценок по Дискретной Математике
+#
+# Мой Telegram: @andrey_bashtovoy
+# Инста: @andrey_bashtovoy_sd
+#
+
 from __future__ import print_function
 import pickle
 import os.path
@@ -8,13 +15,13 @@ import telebot
 import json
 
 
-# If modifying these scopes, delete the file token.pickle.
+# Данные таблицы для парсинга
 SCOPES = ['https://www.googleapis.com/auth/spreadsheets.readonly']
-
-# The ID and range of a sample spreadsheet.
 SAMPLE_SPREADSHEET_ID = '1wgjxDcPGbcFnFhToXQApPerdURvo6ureUrCfyvOv_WU'
 SAMPLE_RANGE_NAME = 'B2:U'
 
+
+# Подключение самого бота
 bot = telebot.TeleBot('956609068:AAHkOA95qzROv8Vrq56qLKqlp9UPVvMPFgE')
 
 @bot.message_handler(commands=['start'])
@@ -23,11 +30,11 @@ def dm_start(message):
 
 @bot.message_handler(commands=['dm'])
 def dm_send(message):
-	temp=message.text.lower().split(' ')
-	if(len(temp)>1):
+	temp=message.text.lower().split(' ') # Разделяю команду на две части
+	if(len(temp)>1): # Если вторая часть введена (Фамилия)
 		result=get_stats(0,temp[1])
 		bot.send_message(message.chat.id, str(result), parse_mode='Markdown')
-	else:
+	else: # Если только /dm
 		file=json.loads(open("names.json","r").read())
 		for i in range(len(file)):
 			if(file[i][0]==message.from_user.username):
@@ -39,19 +46,25 @@ def dm_send(message):
 
 @bot.message_handler(commands=['dm_rating'])
 def dm_rating(message):
+	'''
+		Просто беру строку из get_stats() с параметром mode=1 и вывожу её в чаты
+	'''
 	result=get_stats(1)
 	bot.send_message(message.chat.id, str(result), parse_mode='Markdown')
 
 @bot.message_handler(commands=['dm_reg'])
 def dm_reg(message):
+	'''
+		Основной принцип работы аналогичен с /dm
+	'''
 	temp=message.text.lower().split(' ')
 	if(len(temp)>1):
-		file=json.loads(open("names.json","r").read())
+		file=json.loads(open("names.json","r").read()) # Считываю все данные о пользователях
 
 		for i in range(len(file)):
 			if(file[i][0]==message.from_user.username):
 				file[i][1]=temp[1]
-				open("names.json","w").write(json.dumps(file))
+				open("names.json","w").write(json.dumps(file)) # После всех манипуляций перезаписываю данные в файл
 				bot.send_message(message.chat.id, 'Я тебя запомнил!')
 				return(1)
 
@@ -61,11 +74,22 @@ def dm_reg(message):
 	else:
 		bot.send_message(message.chat.id, 'Введи "/dm_reg Фамилия", чтобы бот запомнил твою фамилию.')
 
+@bot.message_handler(commands=['dm_about'])
+def dm_about(message):
+	'''
+		Инфа о боте
+	'''
+	bot.send_message(message.chat.id, "*Discrete Math* - бот для парсинга оценок ДМ из Google Sheets\n\
+\n\
+*Исходный код* бота на *GitHub* с небольшими объяснениями: [ССЫЛКА](https://github.com/andreybashtovoy/parsebot)\n\
+\n\
+В знак благодарности, подпишись на инстик разработчика:  [andrey_bashtovoy_sd](https://www.instagram.com/andrey_bashtovoy_sd/)))0)", parse_mode='Markdown')
 
 
 def get_stats(mode,name=''):
-	"""Shows basic usage of the Sheets API.
-	Prints values from a sample spreadsheet.
+	"""
+		Тут пол функции - это просто скопированный код для парсинга с Google Sheets (Изобретать велосипед смысла не вижу).
+		Во второй части функция формирует строку с инфой и возвращает её.
 	"""
 	creds = None
 	# The file token.pickle stores the user's access and refresh tokens, and is
@@ -94,10 +118,12 @@ def get_stats(mode,name=''):
 								range=SAMPLE_RANGE_NAME).execute()
 	values = result.get('values', [])
 
+	# Дальше сам вывод инфы
+
 	if not values:
 		print('No data found.')
 	else:
-		if(mode==0):
+		if(mode==0): #Если это /dm ...
 			for i in range(len(values)):
 				if(len(values[i]) and name in values[i][0].lower()):
 						total=0;
@@ -117,7 +143,7 @@ def get_stats(mode,name=''):
 								scores=scores+'*'+values[col_id][n+1]+'*'+": "+str(values[i][1:][n])+"\n"
 
 						return('_'+values[i][0]+"_\n\n"+scores+"\n*Общий балл*: "+str(total))
-		elif(mode==1):
+		elif(mode==1): # Если это /dm_rating
 			arr=[]
 			for i in range(len(values)):
 				if(len(values[i]) and i!=0):
@@ -156,6 +182,9 @@ def get_stats(mode,name=''):
 
 
 def checkio(n):
+	'''
+		Переводит арабские в римские (код не мой)
+	'''
 	result = ''
 	for arabic, roman in zip((1000, 900, 500, 400, 100, 90, 50, 40, 10, 9, 5, 4, 1),
 							 'M     CM   D    CD   C    XC  L   XL  X   IX V  IV I'.split()):
