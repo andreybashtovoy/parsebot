@@ -1,0 +1,4 @@
+*.json
+token.pickle
+#bot
+test.py

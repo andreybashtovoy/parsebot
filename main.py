@@ -15,7 +15,7 @@ SCOPES = ['https://www.googleapis.com/auth/spreadsheets.readonly']
 SAMPLE_SPREADSHEET_ID = '1wgjxDcPGbcFnFhToXQApPerdURvo6ureUrCfyvOv_WU'
 SAMPLE_RANGE_NAME = 'B2:U'
 
-bot = telebot.TeleBot('956609068:AAHkOA95qzROv8Vrq56qLKqlp9UPVvMPFgE')
+bot = telebot.TeleBot(open('bot',"r").read())
 
 @bot.message_handler(commands=['start'])
 def dm_start(message):
