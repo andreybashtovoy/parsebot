@@ -5,6 +5,7 @@ from googleapiclient.discovery import build
 from google_auth_oauthlib.flow import InstalledAppFlow
 from google.auth.transport.requests import Request
 import telebot
+import json
 
 
 # If modifying these scopes, delete the file token.pickle.
@@ -27,12 +28,38 @@ def dm_send(message):
 		result=get_stats(0,temp[1])
 		bot.send_message(message.chat.id, str(result), parse_mode='Markdown')
 	else:
-		bot.send_message(message.chat.id, 'Введи "/dm Фамилия", чтобы узнать свои баллы по ДМ.')
+		file=json.loads(open("names.json","r").read())
+		for i in range(len(file)):
+			if(file[i][0]==message.from_user.username):
+				result=get_stats(0,file[i][1])
+				bot.send_message(message.chat.id, str(result), parse_mode='Markdown')
+				return(1)
+
+		bot.send_message(message.chat.id, 'Введи "/dm Фамилия", чтобы узнать свои баллы по ДМ или зарегистрируй свою фамилию командой "/dm_reg Фамилия".')
 
 @bot.message_handler(commands=['dm_rating'])
 def dm_rating(message):
 	result=get_stats(1)
 	bot.send_message(message.chat.id, str(result), parse_mode='Markdown')
+
+@bot.message_handler(commands=['dm_reg'])
+def dm_reg(message):
+	temp=message.text.lower().split(' ')
+	if(len(temp)>1):
+		file=json.loads(open("names.json","r").read())
+
+		for i in range(len(file)):
+			if(file[i][0]==message.from_user.username):
+				file[i][1]=temp[1]
+				open("names.json","w").write(json.dumps(file))
+				bot.send_message(message.chat.id, 'Я тебя запомнил!')
+				return(1)
+
+		file.append([message.from_user.username,temp[1]])
+		open("names.json","w").write(json.dumps(file))
+		bot.send_message(message.chat.id, 'Я тебя запомнил!')
+	else:
+		bot.send_message(message.chat.id, 'Введи "/dm_reg Фамилия", чтобы бот запомнил твою фамилию.')
 
 
 
