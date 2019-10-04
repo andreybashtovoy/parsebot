@@ -83,7 +83,7 @@ def dm_about(message):
 \n\
 *Исходный код* бота на *GitHub* с небольшими объяснениями: [ССЫЛКА](https://github.com/andreybashtovoy/parsebot)\n\
 \n\
-В знак благодарности, подпишись на инстик разработчика:  [andrey_bashtovoy_sd](https://www.instagram.com/andrey_bashtovoy_sd/)))0)", parse_mode='Markdown')
+Поддержи разработчика - подпишись на инстик:  [andrey_bashtovoy_sd](https://www.instagram.com/andrey_bashtovoy_sd/)))0)", parse_mode='Markdown')
 
 
 def get_stats(mode,name=''):
