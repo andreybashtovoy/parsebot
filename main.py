@@ -33,46 +33,57 @@ def dm_send(message):
 	temp=message.text.lower().split(' ') # Разделяю команду на две части
 	if(len(temp)>1): # Если вторая часть введена (Фамилия)
 		result=get_stats(0,temp[1])
-		bot.send_message(message.chat.id, str(result), parse_mode='Markdown')
+		bot.send_message(message.chat.id, str(result), parse_mode='Markdown', reply_to_message_id=message.message_id)
+
+		file=json.loads(open("names.json","r").read()) # Считываю все данные о пользователях
+		
+		for i in range(len(file)):
+			if(file[i][0]==message.from_user.id):
+				file[i][1]=temp[1]
+				open("names.json","w").write(json.dumps(file)) # После всех манипуляций перезаписываю данные в файл
+				#bot.send_message(message.chat.id, 'Я тебя запомнил!', reply_to_message_id=message.message_id)
+				return(1)
+
+		file.append([message.from_user.id,temp[1]])
+		open("names.json","w").write(json.dumps(file))
 	else: # Если только /dm
 		file=json.loads(open("names.json","r").read())
 		for i in range(len(file)):
-			if(file[i][0]==message.from_user.username):
+			if(file[i][0]==message.from_user.id):
 				result=get_stats(0,file[i][1])
-				bot.send_message(message.chat.id, str(result), parse_mode='Markdown')
+				bot.send_message(message.chat.id, str(result), parse_mode='Markdown', reply_to_message_id=message.message_id)
 				return(1)
 
-		bot.send_message(message.chat.id, 'Введи "/dm Фамилия", чтобы узнать свои баллы по ДМ или зарегистрируй свою фамилию командой "/dm_reg Фамилия".')
+		bot.send_message(message.chat.id, 'Введи "/dm Фамилия", чтобы бот тебя запомнил. Далее просто узнавай свои баллы командой "/dm".')
 
 @bot.message_handler(commands=['dm_rating'])
 def dm_rating(message):
 	'''
-		Просто беру строку из get_stats() с параметром mode=1 и вывожу её в чаты
+		Просто беру строку из get_stats() с параметром mode=1 и вывожу её в чат
 	'''
 	result=get_stats(1)
-	bot.send_message(message.chat.id, str(result), parse_mode='Markdown')
+	bot.send_message(message.chat.id, str(result), parse_mode='Markdown', reply_to_message_id=message.message_id)
 
+'''
 @bot.message_handler(commands=['dm_reg'])
 def dm_reg(message):
-	'''
-		Основной принцип работы аналогичен с /dm
-	'''
 	temp=message.text.lower().split(' ')
 	if(len(temp)>1):
 		file=json.loads(open("names.json","r").read()) # Считываю все данные о пользователях
 
 		for i in range(len(file)):
-			if(file[i][0]==message.from_user.username):
+			if(file[i][0]==message.from_user.id):
 				file[i][1]=temp[1]
 				open("names.json","w").write(json.dumps(file)) # После всех манипуляций перезаписываю данные в файл
-				bot.send_message(message.chat.id, 'Я тебя запомнил!')
+				bot.send_message(message.chat.id, 'Я тебя запомнил!', reply_to_message_id=message.message_id)
 				return(1)
 
-		file.append([message.from_user.username,temp[1]])
+		file.append([message.from_user.id,temp[1]])
 		open("names.json","w").write(json.dumps(file))
-		bot.send_message(message.chat.id, 'Я тебя запомнил!')
+		bot.send_message(message.chat.id, 'Я тебя запомнил!', reply_to_message_id=message.message_id)
 	else:
-		bot.send_message(message.chat.id, 'Введи "/dm_reg Фамилия", чтобы бот запомнил твою фамилию.')
+		bot.send_message(message.chat.id, 'Введи "/dm_reg Фамилия", чтобы бот запомнил твою фамилию.', reply_to_message_id=message.message_id)
+'''
 
 @bot.message_handler(commands=['dm_about'])
 def dm_about(message):
@@ -83,7 +94,7 @@ def dm_about(message):
 \n\
 *Исходный код* бота на *GitHub* с небольшими объяснениями: [ССЫЛКА](https://github.com/andreybashtovoy/parsebot)\n\
 \n\
-Поддержи разработчика - подпишись на инстик:  [andrey_bashtovoy_sd](https://www.instagram.com/andrey_bashtovoy_sd/)))0)", parse_mode='Markdown')
+Поддержи разработчика - подпишись на инстик:  [andrey_bashtovoy_sd](https://www.instagram.com/andrey_bashtovoy_sd/)))0)", parse_mode='Markdown', reply_to_message_id=message.message_id)
 
 
 def get_stats(mode,name=''):
@@ -130,7 +141,7 @@ def get_stats(mode,name=''):
 						scores='';
 
 						for n in range(len(values[i][1:])):
-							if(values[i][1:][n]!=''):
+							if(values[i][1:][n].isdigit()):
 								total=total+int(values[i][1:][n])
 
 								col_id=0
@@ -190,7 +201,7 @@ def checkio(n):
 							 'M     CM   D    CD   C    XC  L   XL  X   IX V  IV I'.split()):
 		result += n // arabic * roman
 		n %= arabic
-		print('({}) {} => {}'.format(roman, n, result))
+		#print('({}) {} => {}'.format(roman, n, result))
 	return result
 
 
