@@ -140,9 +140,9 @@ def get_stats(mode,name=''):
 						total=0;
 						scores='';
 
-						for n in range(len(values[i][1:])):
-							if(values[i][1:][n].isdigit()):
-								total=total+int(values[i][1:][n])
+						for n in range(len(values[i][2:])):
+							if(values[i][2:][n].isdigit()):
+								total=total+int(values[i][2:][n])
 
 								col_id=0
 
@@ -151,7 +151,7 @@ def get_stats(mode,name=''):
 								elif(i>74):
 									col_id=74
 
-								scores=scores+'*'+values[col_id][n+1]+'*'+": "+str(values[i][1:][n])+"\n"
+								scores=scores+'*'+values[col_id][n+1]+'*'+": "+str(values[i][2:][n])+"\n"
 
 						return('_'+values[i][0]+"_\n\n"+scores+"\n*Общий балл*: "+str(total))
 		elif(mode==1): # Если это /dm_rating
@@ -160,11 +160,11 @@ def get_stats(mode,name=''):
 				if(len(values[i]) and i!=0):
 					total=0;
 
-					for n in range(len(values[i][1:])):
-						if(values[i][1:][n]!='' and values[i][0]!='' and not('Група' in values[i][0])):
-							#print(values[i][0]+" "+values[i][1:][n])
+					for n in range(len(values[i][2:])):
+						if(values[i][2:][n]!='' and values[i][0]!='' and not('Група' in values[i][0])):
+							#print(values[i][0]+" "+values[i][2:][n])
 							try:
-								total=total+int(values[i][1:][n])
+								total=total+int(values[i][2:][n])
 							except:
 								pass
 					arr.append([total,values[i][0]])
