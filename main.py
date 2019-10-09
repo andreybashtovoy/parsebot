@@ -151,7 +151,7 @@ def get_stats(mode,name=''):
 								elif(i>74):
 									col_id=74
 
-								scores=scores+'*'+values[col_id][n+1]+'*'+": "+str(values[i][2:][n])+"\n"
+								scores=scores+'*'+values[col_id][n+2]+'*'+": "+str(values[i][2:][n])+"\n"
 
 						return('_'+values[i][0]+"_\n\n"+scores+"\n*Общий балл*: "+str(total))
 		elif(mode==1): # Если это /dm_rating
