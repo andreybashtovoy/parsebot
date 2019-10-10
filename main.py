@@ -13,6 +13,7 @@ from google_auth_oauthlib.flow import InstalledAppFlow
 from google.auth.transport.requests import Request
 import telebot
 import json
+import requests
 
 
 # Данные таблицы для парсинга
@@ -27,6 +28,21 @@ bot = telebot.TeleBot('956609068:AAHkOA95qzROv8Vrq56qLKqlp9UPVvMPFgE')
 @bot.message_handler(commands=['start'])
 def dm_start(message):
 	bot.send_message(message.chat.id, 'Привет! Введи "/dm Фамилия", чтобы узнать свои баллы по ДМ.')
+
+@bot.message_handler(commands=['dm_send_data'])
+def dm_send_data(message):
+	file=open("names.json","r").read()
+	r = requests.post("http://sdpromotion.zzz.com.ua/sync_names.php", data={'data': file})
+	bot.send_message(message.chat.id, str(r.status_code)+' '+r.reason)
+
+@bot.message_handler(commands=['dm_get_data'])
+def dm_get_data(message):
+	r = requests.get("http://sdpromotion.zzz.com.ua/names.json")
+	if(r.status_code == 200):
+		open("names.json","w").write(r.text)
+
+	#file=open("names.json","r").read()
+	bot.send_message(message.chat.id, r.reason)
 
 @bot.message_handler(commands=['dm'])
 def dm_send(message):
