@@ -77,8 +77,13 @@ def dm_rating(message):
 	'''
 		Просто беру строку из get_stats() с параметром mode=1 и вывожу её в чат
 	'''
-	result=get_stats(1)
-	bot.send_message(message.chat.id, str(result), parse_mode='Markdown', reply_to_message_id=message.message_id)
+	temp=message.text.lower().split(' ')
+	if(len(temp)>1 and temp[1].isdigit()):
+		result=get_stats(1,page=int(temp[1]))
+		bot.send_message(message.chat.id, str(result), parse_mode='Markdown', reply_to_message_id=message.message_id)
+	else:
+		result=get_stats(1)
+		bot.send_message(message.chat.id, str(result), parse_mode='Markdown', reply_to_message_id=message.message_id)
 
 '''
 @bot.message_handler(commands=['dm_reg'])
@@ -113,7 +118,9 @@ def dm_about(message):
 Поддержи разработчика - подпишись на инстик:  [andrey_bashtovoy_sd](https://www.instagram.com/andrey_bashtovoy_sd/)))0)", parse_mode='Markdown', reply_to_message_id=message.message_id)
 
 
-def get_stats(mode,name=''):
+def get_stats(mode,name='',page=1):
+	if page <= 0:
+		page = 1;
 	"""
 		Тут пол функции - это просто скопированный код для парсинга с Google Sheets (Изобретать велосипед смысла не вижу).
 		Во второй части функция формирует строку с инфой и возвращает её.
@@ -188,19 +195,20 @@ def get_stats(mode,name=''):
 			arr.sort()
 			arr.reverse()
 
-			string="*Текущий рейтинг потока по ДМ:*\n"
+			string="*Текущий рейтинг потока по ДМ* (Стр. "+str(page)+")\n"
 
 			place=0;
 			last=200;
 
 			for i in range(len(arr)):
-				if(i<20):
-					if(arr[i][0]<last):
-						place=place+1
-					last=arr[i][0]
+				if(arr[i][0]<last):
+					place=place+1
+				last=arr[i][0]
+
+				if(i<20*page and i>=20*page-20):
 					string=string+"\n*"+checkio(place)+"*. _"+arr[i][1]+"_: *"+str(arr[i][0])+"б.*"
-				else:
-					break
+				#else:
+				#	break
 			return(string)
 
 
