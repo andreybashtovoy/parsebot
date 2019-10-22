@@ -25,7 +25,6 @@ SAMPLE_RANGE_NAME = 'B2:U'
 # Подключение самого бота
 bot = telebot.TeleBot('956609068:AAHkOA95qzROv8Vrq56qLKqlp9UPVvMPFgE')
 bot.send_message(858295159, "ДОБРОГО РАНКУ")
-dm_get_data()
 
 @bot.message_handler(commands=['start'])
 def dm_start(message):
@@ -45,6 +44,8 @@ def dm_get_data(message=0):
 
 	#file=open("names.json","r").read()
 	bot.send_message(message.chat.id, r.reason)
+
+dm_get_data()
 
 @bot.message_handler(commands=['dm'])
 def dm_send(message):
