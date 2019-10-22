@@ -43,7 +43,10 @@ def dm_get_data(message=0):
 		open("names.json","w").write(r.text)
 
 	#file=open("names.json","r").read()
-	bot.send_message(message.chat.id, r.reason)
+	if(message!=0):
+		bot.send_message(message.chat.id, r.reason)
+	else:
+		print(str(r.reason))
 
 dm_get_data()
 
