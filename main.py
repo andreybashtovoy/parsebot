@@ -15,6 +15,10 @@ import telebot
 import json
 import requests
 
+from sys import platform
+if(platform != "win32" and 0):
+	from systemd import journal
+
 
 # Данные таблицы для парсинга
 SCOPES = ['https://www.googleapis.com/auth/spreadsheets.readonly']
@@ -235,5 +239,8 @@ def checkio(n):
 	return result
 
 
-
-bot.polling()
+try:
+	bot.polling()
+except Exception as e:
+	if(platform != "win32" and 0):
+		journal.send("Error: "+e)
