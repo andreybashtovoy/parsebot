@@ -116,6 +116,21 @@ def dm_reg(message):
 		bot.send_message(message.chat.id, 'Введи "/dm_reg Фамилия", чтобы бот запомнил твою фамилию.', reply_to_message_id=message.message_id)
 '''
 
+
+@bot.message_handler(commands=['dm_groups'])
+def dm_rating(message):
+	'''
+		Просто беру строку из get_stats() с параметром mode=1 и вывожу её в чат
+	'''
+	temp=message.text.lower().split(' ')
+	if(len(temp)>1):
+		result=get_stats(2)
+		bot.send_message(message.chat.id, str(result), parse_mode='Markdown', reply_to_message_id=message.message_id)
+	else:
+		result=get_stats(2)
+		bot.send_message(message.chat.id, str(result), parse_mode='Markdown', reply_to_message_id=message.message_id)
+
+
 @bot.message_handler(commands=['dm_about'])
 def dm_about(message):
 	'''
@@ -220,6 +235,38 @@ def get_stats(mode,name='',page=1):
 				#else:
 				#	break
 			return(string)
+		elif(mode==2): # /dm_groups
+			arr=[]
+
+			gr1 = 0
+			gr2 = 0
+			gr3 = 0
+
+			for i in range(len(values)):
+				if(len(values[i]) and i!=0):
+					total=0;
+
+
+					for n in range(len(values[i][2:])):
+						if(values[i][2:][n]!='' and values[i][0]!='' and not('Група' in values[i][0])):
+							#print(values[i][0]+" "+values[i][1:][n])
+							try:
+								total=total+int(values[i][2:][n])
+							except:
+								pass
+
+					if 0 < i < 36:
+						gr1 = gr1 + total
+					elif 36 < i <74:
+						gr2 = gr2 + total
+					else:
+						gr3 = gr3 + total
+					#arr.append([total,values[i][0]])
+
+			string = "_Рейтинг по группам_\n\n*ОБЩИЕ:*\n_ИК-91_: *"+str(gr1)+"*\n_ИК-92_: *"+str(gr2)+"*\n_ИК-93_: *"+str(gr3)+"*\n\n*Средние:*\n_ИК-91_: *"+str(gr1/34)+"*\n_ИК-92_: *"+str(gr2/31)+"*\n_ИК-93_: *"+str(gr3/30)+"*"
+			return(string)
+
+
 
 
 					
