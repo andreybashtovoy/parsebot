@@ -25,7 +25,7 @@ if (platform != "win32" and 0):
 # Данные таблицы для парсинга
 SCOPES = ['https://www.googleapis.com/auth/spreadsheets.readonly']
 SAMPLE_SPREADSHEET_ID = '1wgjxDcPGbcFnFhToXQApPerdURvo6ureUrCfyvOv_WU'
-SAMPLE_RANGE_NAME = 'B2:U'
+SAMPLE_RANGE_NAME = "\'ДМ 126\'!B2:V"
 
 # Подключение самого бота
 bot = telebot.TeleBot('956609068:AAHkOA95qzROv8Vrq56qLKqlp9UPVvMPFgE')
@@ -329,7 +329,7 @@ def get_stats(mode, name='', page=1):
 			          '🎄']
 
 			for i in range(len(arr)):
-				if i < 9:
+				if i < 8:
 					string = string + "\n*" + random.choice(smiles) + "*  _" + str(arr[i][1]) + "_: *" + str(arr[i][0]) + "б.*"
 			# else:
 			#	break
